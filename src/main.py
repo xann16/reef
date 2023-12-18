@@ -1,7 +1,8 @@
 import click
 from os import path
 
-from src.config import Config
+from .config import Config
+from .cli_project import project
 
 
 GROUP_COMMANDS = [
@@ -43,6 +44,7 @@ def main(ctx, verbose, version):
             print(cmd, end=' ')
         print()
     ctx.obj['VERBOSE'] = verbose
+    ctx.obj['config'] = Config.load(VERSION)
 
 
 @main.command('init', context_settings=CTX)
@@ -74,32 +76,7 @@ def init(ctx, config_path, exec_path):
     click.echo("\nReef init successful.")
 
 
-@main.group('project', context_settings=CTX)
-@click.pass_context
-def project(ctx):
-    """
-            Handles reef project creation and maintenance.
-    """
-
-    config = Config.load(VERSION)
-
-    print("###====================###")
-    print("### project subcommand ###")
-    print("###====================###")
-
-
-@project.command('create', context_settings=CTX)
-@click.pass_context
-def project_create(ctx):
-    """
-            Creates new reef project.
-    """
-
-    config = Config.load(VERSION)
-
-    print("###===========================###")
-    print("### create project subcommand ###")
-    print("###===========================###")
+main.add_command(project)
 
 
 @main.command('module', context_settings=CTX)
@@ -108,7 +85,7 @@ def module(ctx):
     """
             Handles module cration and mainteneance of reef projects.
     """
-    config = Config.load(VERSION)
+    config = ctx.obj['config']
 
     print("###===================###")
     print("### module subcommand ###")
