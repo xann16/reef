@@ -23,7 +23,8 @@ CTX = dict(help_option_names=['-h', '--help'])
 @click.pass_context
 @click.option('--verbose', '-v', is_flag=True, help="Increase output verbosity level")
 @click.option('--version', '-V', is_flag=True, help="Print current version of reef used")
-def main(ctx, verbose, version):
+@click.option('--context', '-c', default='', help="Provides context as project::module::component")
+def main(ctx, context, verbose, version):
     """
             Strands ecosystem tool for generating project structures, build systems and
             maintain them.
@@ -43,7 +44,13 @@ def main(ctx, verbose, version):
         for cmd in GROUP_COMMANDS:
             print(cmd, end=' ')
         print()
-    ctx.obj['VERBOSE'] = verbose
+
+    context_tokens = context.split('::', 3) if context else []
+    ctx.obj['project'] = context_tokens[0] if len(context_tokens) > 0 else ''
+    ctx.obj['module'] = context_tokens[1] if len(context_tokens) > 1 else ''
+    ctx.obj['component'] = context_tokens[2] if len(context_tokens) > 2 else ''
+
+    ctx.obj['is_verbose'] = verbose
     ctx.obj['config'] = Config.load(VERSION)
 
 

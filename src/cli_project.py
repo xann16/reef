@@ -41,8 +41,9 @@ def project_list(ctx):
 
 
 @project.command('describe')
+@click.option('--project', '-p', default='', help="Name of project to describe")
 @click.pass_context
-def project_describe(ctx):
+def project_describe(project, ctx):
     """
             Displays information on given reef project.
     """
@@ -55,8 +56,11 @@ def project_describe(ctx):
 
 
 @project.command('create')
+@click.argument('name')
+@click.option('--template', '-t', default='basic', help="Name of template for created project")
+@click.option('--output-path', '-o', default='.', help="Top-level directory where project is to be created")
 @click.pass_context
-def project_create(ctx):
+def project_create(name, template, output_path, ctx):
     """
             Creates new reef project.
     """
@@ -69,8 +73,10 @@ def project_create(ctx):
 
 
 @project.command('import')
+@click.argument('path')
+@click.option('--name', '-n', default='', help="Name of imported project (if other than top-level directory)")
 @click.pass_context
-def project_import(ctx):
+def project_import(path, name, ctx):
     """
             Tries to add existing project to reef repository.
     """
@@ -82,9 +88,25 @@ def project_import(ctx):
     print("###===========================###")
 
 
-@project.command('delete')
+@project.command('refresh')
 @click.pass_context
-def project_delete(ctx):
+def project_import(path, name, ctx):
+    """
+            Refresh reef generated files for given project.
+    """
+
+    config = ctx.obj['config']
+
+    print("###============================###")
+    print("### refresh project subcommand ###")
+    print("###============================###")
+
+
+@project.command('delete')
+@click.argument('name')
+@click.option('--remove-files', '-r', is_flag=True, help="Removes all files in addition to removing project from reef repository")
+@click.pass_context
+def project_delete(name, remove_files, ctx):
     """
             Removes project from reef repository.
     """
@@ -111,8 +133,9 @@ def project_default(ctx):
 
 
 @project.command('set-default')
+@click.argument('name')
 @click.pass_context
-def project_set_default(ctx):
+def project_set_default(name, ctx):
     """
             Sets default reef project to be used in current context.
     """
@@ -139,8 +162,9 @@ def project_default_module(ctx):
 
 
 @project.command('set-default-module')
+@click.argument('name')
 @click.pass_context
-def project_default_module(ctx):
+def project_default_module(name, ctx):
     """
             Sets default module to be used with current reef project.
     """
@@ -181,8 +205,9 @@ def project_config_list(ctx):
 
 
 @project_config.group('get')
+@click.argument('key')
 @click.pass_context
-def project_config_get(ctx):
+def project_config_get(key, ctx):
     """
             Gets value of given configuration item.
     """
@@ -195,8 +220,10 @@ def project_config_get(ctx):
 
 
 @project_config.group('set')
+@click.argument('key')
+@click.argument('value')
 @click.pass_context
-def project_config_set(ctx):
+def project_config_set(key, value, ctx):
     """
             Sets value of given configuration item.
     """
@@ -209,10 +236,11 @@ def project_config_set(ctx):
 
 
 @project_config.group('reset')
+@click.argument('key')
 @click.pass_context
-def project_config_reset(ctx):
+def project_config_reset(key, ctx):
     """
-            Reets given configuration item to its default value.
+            Resets given configuration item to its default value.
     """
 
     config = ctx.obj['config']
@@ -223,8 +251,10 @@ def project_config_reset(ctx):
 
 
 @project_config.group('add-item')
+@click.argument('key')
+@click.argument('value')
 @click.pass_context
-def project_config_list(ctx):
+def project_config_list(key, value, ctx):
     """
             Adds value to list for given configuration item.
     """
@@ -237,8 +267,10 @@ def project_config_list(ctx):
 
 
 @project_config.group('remove-item')
+@click.argument('key')
+@click.argument('value')
 @click.pass_context
-def project_config_list(ctx):
+def project_config_list(key, value, ctx):
     """
             Removes value from list for given configuration item.
     """
@@ -247,5 +279,20 @@ def project_config_list(ctx):
 
     print("###=======================================###")
     print("### remove-item project config subcommand ###")
+    print("###=======================================###")
+
+
+@project_config.group('clear-items')
+@click.argument('key')
+@click.pass_context
+def project_config_clear_items(key, ctx):
+    """
+            Removes all values from list for given configuration item.
+    """
+
+    config = ctx.obj['config']
+
+    print("###=======================================###")
+    print("### clear-items project config subcommand ###")
     print("###=======================================###")
 
