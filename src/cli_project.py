@@ -1,29 +1,37 @@
 import click
 
 from .config import Config
+from .projects.project_manager import ProjectManager
+
+def _resolve_project_name(ctx, override=None, is_override_required=False):
+    if is_override_required and not override:
+        assert False # TODO
+    if override:
+        return override
+    if 'project' in ctx.obj and ctx.obj['project']:
+        return ctx.obj['project']
+    return None 
 
 
 @click.group('project')
 @click.pass_context
 def project(ctx):
     """
-            Handles reef project creation and maintenance.
+        Handles reef project creation and maintenance.
     """
-    pass
+
+    ctx.obj['project_manager'] = ProjectManager()
 
 
 @project.command('info')
 @click.pass_context
 def project_info(ctx):
     """
-            Displays basic information on current state of reef projects.
+        Displays basic information on current state of reef projects.
     """
 
-    config = ctx.obj['config']
-
-    print("###=========================###")
-    print("### info project subcommand ###")
-    print("###=========================###")
+    manager = ctx.obj['project_manager']
+    manager.info()
 
 
 @project.command('list')
@@ -33,11 +41,8 @@ def project_list(ctx):
             Lists all registered reef projects.
     """
 
-    config = ctx.obj['config']
-
-    print("###=========================###")
-    print("### list project subcommand ###")
-    print("###=========================###")
+    manager = ctx.obj['project_manager']
+    manager.get_list()
 
 
 @project.command('describe')
@@ -48,16 +53,14 @@ def project_describe(project, ctx):
             Displays information on given reef project.
     """
 
-    config = ctx.obj['config']
-
-    print("###=========================###")
-    print("### list project subcommand ###")
-    print("###=========================###")
+    manager = ctx.obj['project_manager']
+    project_name = _resolve_project_name(ctx, project)
+    manager.describe(project_name)
 
 
 @project.command('create')
 @click.argument('name')
-@click.option('--template', '-t', default='basic', help="Name of template for created project")
+@click.option('--template', '-t', default='', help="Name of template for created project")
 @click.option('--output-path', '-o', default='.', help="Top-level directory where project is to be created")
 @click.pass_context
 def project_create(name, template, output_path, ctx):
@@ -65,11 +68,8 @@ def project_create(name, template, output_path, ctx):
             Creates new reef project.
     """
 
-    config = ctx.obj['config']
-
-    print("###===========================###")
-    print("### create project subcommand ###")
-    print("###===========================###")
+    manager = ctx.obj['project_manager']
+    manager.create(name, template if template else None, output_path)
 
 
 @project.command('import')
@@ -81,25 +81,21 @@ def project_import(path, name, ctx):
             Tries to add existing project to reef repository.
     """
 
-    config = ctx.obj['config']
-
-    print("###===========================###")
-    print("### import project subcommand ###")
-    print("###===========================###")
+    manager = ctx.obj['project_manager']
+    manager.import_from(path, name if name else None)
 
 
 @project.command('refresh')
+@click.option('--project', '-p', default='', help="Name of project to describe")
 @click.pass_context
-def project_import(path, name, ctx):
+def project_refresh(project, ctx):
     """
             Refresh reef generated files for given project.
     """
 
-    config = ctx.obj['config']
-
-    print("###============================###")
-    print("### refresh project subcommand ###")
-    print("###============================###")
+    manager = ctx.obj['project_manager']
+    project_name = _resolve_project_name(ctx, project)
+    manager.refresh(project_name)
 
 
 @project.command('delete')
@@ -111,11 +107,9 @@ def project_delete(name, remove_files, ctx):
             Removes project from reef repository.
     """
 
-    config = ctx.obj['config']
-
-    print("###===========================###")
-    print("### remove project subcommand ###")
-    print("###===========================###")
+    manager = ctx.obj['project_manager']
+    project_name = _resolve_project_name(ctx, name, True)
+    manager.describe(project_name)
 
 
 @project.command('default')
@@ -125,11 +119,8 @@ def project_default(ctx):
             Gets name of reef project used as default in current context.
     """
 
-    config = ctx.obj['config']
-
-    print("###============================###")
-    print("### default project subcommand ###")
-    print("###============================###")
+    manager = ctx.obj['project_manager']
+    print(manager.get_default())
 
 
 @project.command('set-default')
@@ -140,11 +131,9 @@ def project_set_default(name, ctx):
             Sets default reef project to be used in current context.
     """
 
-    config = ctx.obj['config']
-
-    print("###================================###")
-    print("### set-default project subcommand ###")
-    print("###================================###")
+    manager = ctx.obj['project_manager']
+    project_name = _resolve_project_name(ctx, name, True)
+    manager.set_default(project_name)
 
 
 @project.command('default-module')
@@ -154,11 +143,9 @@ def project_default_module(ctx):
             Gets name of default module used with current reef project.
     """
 
-    config = ctx.obj['config']
-
-    print("###===================================###")
-    print("### default-module project subcommand ###")
-    print("###===================================###")
+    manager = ctx.obj['project_manager']
+    project_name = _resolve_project_name(ctx, '')
+    print(manager.get_default_module(project_name))
 
 
 @project.command('set-default-module')
@@ -169,11 +156,9 @@ def project_default_module(name, ctx):
             Sets default module to be used with current reef project.
     """
 
-    config = ctx.obj['config']
-
-    print("###=======================================###")
-    print("### set-default-module project subcommand ###")
-    print("###=======================================###")
+    manager = ctx.obj['project_manager']
+    project_name = _resolve_project_name(ctx, '')
+    manager.set_default_module(name, project_name)
 
 
 @project.group('config')
@@ -182,12 +167,7 @@ def project_config(ctx):
     """
             Handles configuration specific for given reef project.
     """
-
-    config = ctx.obj['config']
-
-    print("###===========================###")
-    print("### project config subcommand ###")
-    print("###===========================###")
+    pass
 
 
 @project_config.group('list')
@@ -197,11 +177,9 @@ def project_config_list(ctx):
             Lists configuration items for given reef project.
     """
 
-    config = ctx.obj['config']
-
-    print("###================================###")
-    print("### list project config subcommand ###")
-    print("###================================###")
+    manager = ctx.obj['project_manager']
+    project_name = _resolve_project_name(ctx, '')
+    manager.config_list_entries(project_name)
 
 
 @project_config.group('get')
@@ -212,11 +190,9 @@ def project_config_get(key, ctx):
             Gets value of given configuration item.
     """
 
-    config = ctx.obj['config']
-
-    print("###===============================###")
-    print("### get project config subcommand ###")
-    print("###===============================###")
+    manager = ctx.obj['project_manager']
+    project_name = _resolve_project_name(ctx, '')
+    print(manager.config_get_entry(key, project_name))
 
 
 @project_config.group('set')
@@ -228,11 +204,9 @@ def project_config_set(key, value, ctx):
             Sets value of given configuration item.
     """
 
-    config = ctx.obj['config']
-
-    print("###===============================###")
-    print("### set project config subcommand ###")
-    print("###===============================###")
+    manager = ctx.obj['project_manager']
+    project_name = _resolve_project_name(ctx, '')
+    manager.config_set_entry(key, value, project_name)
 
 
 @project_config.group('reset')
@@ -243,43 +217,37 @@ def project_config_reset(key, ctx):
             Resets given configuration item to its default value.
     """
 
-    config = ctx.obj['config']
-
-    print("###=================================###")
-    print("### reset project config subcommand ###")
-    print("###=================================###")
+    manager = ctx.obj['project_manager']
+    project_name = _resolve_project_name(ctx, '')
+    manager.config_reset_entry(key, project_name)
 
 
 @project_config.group('add-item')
 @click.argument('key')
 @click.argument('value')
 @click.pass_context
-def project_config_list(key, value, ctx):
+def project_config_add_item(key, value, ctx):
     """
             Adds value to list for given configuration item.
     """
 
-    config = ctx.obj['config']
-
-    print("###====================================###")
-    print("### add-item project config subcommand ###")
-    print("###====================================###")
+    manager = ctx.obj['project_manager']
+    project_name = _resolve_project_name(ctx, '')
+    manager.config_add_entry_item(key, value, project_name)
 
 
 @project_config.group('remove-item')
 @click.argument('key')
 @click.argument('value')
 @click.pass_context
-def project_config_list(key, value, ctx):
+def project_config_remove_item(key, value, ctx):
     """
             Removes value from list for given configuration item.
     """
 
-    config = ctx.obj['config']
-
-    print("###=======================================###")
-    print("### remove-item project config subcommand ###")
-    print("###=======================================###")
+    manager = ctx.obj['project_manager']
+    project_name = _resolve_project_name(ctx, '')
+    manager.config_remove_entry_item(key, value, project_name)
 
 
 @project_config.group('clear-items')
@@ -290,9 +258,7 @@ def project_config_clear_items(key, ctx):
             Removes all values from list for given configuration item.
     """
 
-    config = ctx.obj['config']
-
-    print("###=======================================###")
-    print("### clear-items project config subcommand ###")
-    print("###=======================================###")
+    manager = ctx.obj['project_manager']
+    project_name = _resolve_project_name(ctx, '')
+    manager.config_clear_entry_items(key, project_name)
 
