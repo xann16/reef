@@ -1,0 +1,2 @@
+class ProjectTempSettings():
+    pass

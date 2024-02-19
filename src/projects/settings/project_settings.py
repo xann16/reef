@@ -1,0 +1,2 @@
+class ProjectSettings():
+    pass
