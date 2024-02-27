@@ -85,8 +85,11 @@ class ProjectRepositoryData():
 
     def to_dict(self):
         ''' Returns ProjectRepositoryData as a dictionary with its properties (convenient for conversion to JSON). '''
-        return {
+        result = {
             'project': list(self),
-            'default_project': self.default_project
         }
+
+        if self._default_project is not None:
+            result['default_project'] = self.default_project
     
+        return result

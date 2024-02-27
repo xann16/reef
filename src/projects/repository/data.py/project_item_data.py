@@ -67,7 +67,7 @@ class ProjectItemData():
                 raise ValueError("'config_path' property must be a string.")
             if not config_path:
                 raise ValueError("'config_path' property cannot be an empty string")
-        self.config_path = config_path
+        self._config_path = config_path
 
 
     @property
@@ -83,15 +83,19 @@ class ProjectItemData():
                 raise ValueError("'default_module' property must be a string.")
             if not default_module:
                 raise ValueError("'default_module' property cannot be an empty string")
-        self.default_module = default_module
+        self._default_module = default_module
 
 
     def to_dict(self):
         ''' Returns ProjectItemData as a dictionary with its properties (convenient for conversion to JSON). '''
-        return {
+        result = {
             'name': self.name,
-            'source_path': self.source_path,
-            'config_path': self.config_path,
-            'default_module': self.default_module
+            'source_path': self.source_path
         }
     
+        if self._config_path is not None:
+            result['config_path'] = self.config_path
+        if self._default_module is not None:
+            result['default_module'] = self.default_module
+
+        return result
