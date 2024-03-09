@@ -1,4 +1,5 @@
 from os import path
+from typing import Any
 
 class ProjectItemData():
     '''
@@ -6,11 +7,11 @@ class ProjectItemData():
     '''
 
     def __init__(self,
-                 obj, *,
-                 name=None,
-                 source_path=None,
-                 config_path=None,
-                 default_module=None):
+                 obj: dict[str, Any], *,
+                 name: str | None = None,
+                 source_path: str | None = None,
+                 config_path: str | None = None,
+                 default_module: str | None = None):
         '''
         Constructs ProjectItemData object from item dictionary or manual property value overrides.
         '''
@@ -21,12 +22,12 @@ class ProjectItemData():
 
         
     @property
-    def name(self):
+    def name(self) -> str:
         ''' Project name. '''
         return self._name
     
     @name.setter
-    def name(self, name):
+    def name(self, name: str) -> None:
         ''' Project name. '''
         if name is None:
             raise ValueError("'name' property cannot be None.")
@@ -38,12 +39,12 @@ class ProjectItemData():
 
 
     @property
-    def source_path(self):
+    def source_path(self) -> str:
         ''' Path to the top-level directory where project's source files are contained. '''
         return self._source_path
     
     @source_path.setter
-    def source_path(self, source_path):
+    def source_path(self, source_path: str) -> None:
         ''' Path to the top-level directory where project's source files are contained. '''
         if source_path is None:
             raise ValueError("'source_path' property cannot be None.")
@@ -55,12 +56,12 @@ class ProjectItemData():
 
 
     @property
-    def config_path(self):
+    def config_path(self) -> str:
         ''' Path where project's Reef config files are contained. '''
         return self._config_path if self._config_path is not None else path.join(self._source_path, '.reef')
     
     @config_path.setter
-    def config_path(self, config_path):
+    def config_path(self, config_path: str | None):
         ''' Path where project's Reef config files are contained. '''
         if config_path is not None:
             if not isinstance(config_path, str):
@@ -71,12 +72,12 @@ class ProjectItemData():
 
 
     @property
-    def default_module(self):
+    def default_module(self) -> str | None:
         ''' Module used as default when working with this project. '''
         return self._default_module
     
     @default_module.setter
-    def default_module(self, default_module):
+    def default_module(self, default_module: str | None) -> None:
         ''' Module used as default when working with this project. '''
         if default_module is not None:
             if not isinstance(default_module, str):
@@ -86,7 +87,7 @@ class ProjectItemData():
         self._default_module = default_module
 
 
-    def to_dict(self):
+    def to_dict(self) -> dict[str, Any]:
         ''' Returns ProjectItemData as a dictionary with its properties (convenient for conversion to JSON). '''
         result = {
             'name': self.name,
