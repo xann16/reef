@@ -1,7 +1,10 @@
 import click
+from os import path
 
 from .config import Config
 from .projects.project_manager import ProjectManager
+
+PROJECT_REPOSITORY_JSON_FILEPATH = "projects.json"
 
 def _resolve_project_name(ctx, override=None, is_override_required=False):
     if is_override_required and not override:
@@ -16,33 +19,39 @@ def _resolve_project_name(ctx, override=None, is_override_required=False):
 @click.group('project')
 @click.pass_context
 def project(ctx):
-    """
-        Handles reef project creation and maintenance.
-    """
-
-    ctx.obj['project_manager'] = ProjectManager()
+    ''' Handles reef project creation and maintenance. '''
+    project_repo_path = path.join(ctx.obj['config'].projects_path(), PROJECT_REPOSITORY_JSON_FILEPATH)
+    ctx.obj['project_manager'] = ProjectManager(repository_path=project_repo_path)
 
 
 @project.command('info')
 @click.pass_context
 def project_info(ctx):
-    """
-        Displays basic information on current state of reef projects.
-    """
+    ''' Displays basic information on current state of reef projects. '''
+    items = list(ctx.obj['project_manager'].project_items)
 
-    manager = ctx.obj['project_manager']
-    manager.info()
+    if not items:
+        print("No reef projects are registered.")
+
+    project_name_title = "PROJECT NAME"
+    max_project_name_length = max(max(len(name) for name, _, _ in items), len(project_name_title))
+
+    # title and separator line
+    print(f"| ### | {project_name_title:max_project_name_length} | CFG | SOURCE PATH ")
+    print(f"| --- | {'-' * max_project_name_length} | --- | ----------- ... ")
+
+    # item listing
+    for i, (name, source_path, is_config_inplace) in enumerate(items):
+        config_label = "IN " if is_config_inplace else "OUT"
+        print(f"| {i + 1:3} | {name:max_project_name_length} | {config_label} | {source_path}")
 
 
 @project.command('list')
 @click.pass_context
 def project_list(ctx):
-    """
-            Lists all registered reef projects.
-    """
-
-    manager = ctx.obj['project_manager']
-    manager.get_list()
+    ''' Lists all registered reef projects. '''
+    for name, _, _ in ctx.obj['project_manager'].project_items:
+        print(name)
 
 
 @project.command('describe')
@@ -89,10 +98,7 @@ def project_import(path, name, ctx):
 @click.option('--project', '-p', default='', help="Name of project to describe")
 @click.pass_context
 def project_refresh(project, ctx):
-    """
-            Refresh reef generated files for given project.
-    """
-
+    ''' Refreshes reef generated files for given project. '''
     manager = ctx.obj['project_manager']
     project_name = _resolve_project_name(ctx, project)
     manager.refresh(project_name)
@@ -112,31 +118,28 @@ def project_delete(name, remove_files, ctx):
     manager.describe(project_name)
 
 
-@project.command('default')
+@project.command('get-default')
 @click.pass_context
-def project_default(ctx):
-    """
-            Gets name of reef project used as default in current context.
-    """
+def project_get_default(ctx):
+    ''' Outputs name of reef project used as a default in current context. '''
+    default_project = ctx.obj['project_manager'].default_project_name
 
-    manager = ctx.obj['project_manager']
-    print(manager.get_default())
+    if default_project:
+        print(default_project)
+    else:
+        print("No project currently set as default.")
 
 
 @project.command('set-default')
 @click.argument('name')
 @click.pass_context
 def project_set_default(name, ctx):
-    """
-            Sets default reef project to be used in current context.
-    """
-
-    manager = ctx.obj['project_manager']
+    ''' Sets default reef project to be used in current context. '''
     project_name = _resolve_project_name(ctx, name, True)
-    manager.set_default(project_name)
+    ctx.obj['project_manager'].change_default_project(project_name)
 
 
-@project.command('default-module')
+@project.command('get-default-module')
 @click.pass_context
 def project_default_module(ctx):
     """

@@ -37,7 +37,7 @@ class ProjectRepository:
 
     @property
     def project_names(self) -> Iterable[str]:
-        "Lists all project names in the repository. "
+        ''' Lists all project names in the repository. '''
         return (item.name for item in self._data)
 
     def __contains__(self, project_name: str) -> bool:

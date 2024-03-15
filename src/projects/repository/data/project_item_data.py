@@ -72,6 +72,11 @@ class ProjectItemData():
 
 
     @property
+    def is_config_inplace(self) -> bool:
+        return self._config_path is None or path.commonpath(self.source_path, self.config_path) == self.source_path
+
+
+    @property
     def default_module(self) -> str | None:
         ''' Module used as default when working with this project. '''
         return self._default_module

@@ -1,8 +1,13 @@
+import json
+from os import path
+
 from .project_advanced_settings import ProjectAdvancedSettings
 from .project_details_settings import ProjectDetailsSettings
 from .project_cmake_settings import ProjectCMakeSettings
 from .project_languages_settings import ProjectLanguagesSettings
 from .project_temp_settings import ProjectTempSettings
+
+_PROJECT_TOP_LEVEL_SETTINGS_FILENAME = "project.json"
 
 class ProjectSettings():
     '''
@@ -169,3 +174,16 @@ class ProjectSettings():
             result['temp'] = self.temp.to_dict()
 
         return result
+
+
+    @staticmethod
+    def load_from_json(self, config_path: str):
+        ''' Load project settings from default JSON file in the config directory. '''
+        with open(path.join(config_path, _PROJECT_TOP_LEVEL_SETTINGS_FILENAME), 'r', encoding='utf-8') as fp:
+            settings_data = json.load(fp)
+            return ProjectSettings(settings_data)
+        
+    def save_to_json(self, config_path: str) -> None:
+        ''' Save project settings to default JSON file in the config directory. '''
+        with open(path.join(config_path, _PROJECT_TOP_LEVEL_SETTINGS_FILENAME), 'w', encoding='utf-8') as fp:
+            json.dump(self.to_dict(), fp, indent=2)

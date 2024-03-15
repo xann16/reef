@@ -4,7 +4,7 @@ from src.utils import ensure_dir, load_json, dump_json
 
 CONFIG_PATH_ENV_VAR_NAME = "REEF_CONFIG"
 CONFIG_FILE_NAME = "config.json"
-
+CONFIG_PROJECT_DIR = "projects"
 
 class Config(object):
 
@@ -38,6 +38,14 @@ class Config(object):
     @property
     def version_patch(self) -> str:
         return int(self._version.split('.')[2])
+
+    @property
+    def config_file_path(self) -> str:
+        return Config._filepath(self.config_path)
+
+    @property
+    def projects_path(self) -> str:
+        return path.join(self.config_path, CONFIG_PROJECT_DIR)
 
     def __str__(self) -> str:
         result = ""
