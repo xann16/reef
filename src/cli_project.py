@@ -73,49 +73,34 @@ def project_describe(project, ctx):
 @click.option('--output-path', '-o', default='.', help="Top-level directory where project is to be created")
 @click.pass_context
 def project_create(name, template, output_path, ctx):
-    """
-            Creates new reef project.
-    """
-
-    manager = ctx.obj['project_manager']
-    manager.create(name, template if template else None, output_path)
+    ''' Creates new reef project. '''
+    ctx.obj['project_manager'].create(name, template, output_path)
 
 
 @project.command('import')
 @click.argument('path')
-@click.option('--name', '-n', default='', help="Name of imported project (if other than top-level directory)")
+@click.option('--name', '-n', default='', help="Name of imported project (if other than already specified)")
 @click.pass_context
 def project_import(path, name, ctx):
-    """
-            Tries to add existing project to reef repository.
-    """
-
-    manager = ctx.obj['project_manager']
-    manager.import_from(path, name if name else None)
+    ''' Adds an existing reef project to currently used reef repository. '''
+    ctx.obj['project_manager'].import_existing(path, name)
 
 
 @project.command('refresh')
-@click.option('--project', '-p', default='', help="Name of project to describe")
+@click.option('--project', '-p', default='', help="Name of project to refresh")
 @click.pass_context
 def project_refresh(project, ctx):
     ''' Refreshes reef generated files for given project. '''
-    manager = ctx.obj['project_manager']
-    project_name = _resolve_project_name(ctx, project)
-    manager.refresh(project_name)
+    ctx.obj['project_manager'].refresh(_resolve_project_name(ctx, project))
 
 
-@project.command('delete')
+@project.command('remove')
 @click.argument('name')
 @click.option('--remove-files', '-r', is_flag=True, help="Removes all files in addition to removing project from reef repository")
 @click.pass_context
-def project_delete(name, remove_files, ctx):
-    """
-            Removes project from reef repository.
-    """
-
-    manager = ctx.obj['project_manager']
-    project_name = _resolve_project_name(ctx, name, True)
-    manager.describe(project_name)
+def project_remove(name, remove_files, ctx):
+    ''' Removes project from reef repository. '''
+    ctx.obj['project_manager'].remove(_resolve_project_name(ctx, name, True), remove_files)
 
 
 @project.command('get-default')
@@ -140,28 +125,27 @@ def project_set_default(name, ctx):
 
 
 @project.command('get-default-module')
+@click.option('--project', '-p', default='', help="Name of project considered")
 @click.pass_context
-def project_default_module(ctx):
-    """
-            Gets name of default module used with current reef project.
-    """
+def get_project_default_module(ctx, project):
+    ''' Outputs name of a module used as a default for current/given reef project. '''
+    project_name = _resolve_project_name(ctx, project)
+    default_module = ctx.obj['project_manager'].get_default_module_name_for(project_name)
 
-    manager = ctx.obj['project_manager']
-    project_name = _resolve_project_name(ctx, '')
-    print(manager.get_default_module(project_name))
+    if default_module:
+        print(default_module)
+    else:
+        print(f"No module currently set as default for '{project_name}'.")
 
 
 @project.command('set-default-module')
 @click.argument('name')
+@click.option('--project', '-p', default='', help="Name of project considered")
 @click.pass_context
-def project_default_module(name, ctx):
-    """
-            Sets default module to be used with current reef project.
-    """
-
-    manager = ctx.obj['project_manager']
-    project_name = _resolve_project_name(ctx, '')
-    manager.set_default_module(name, project_name)
+def project_default_module(name, project, ctx):
+    ''' Sets default module for current/given reef project. '''
+    project_name = _resolve_project_name(ctx, project)
+    default_module = ctx.obj['project_manager'].change_default_module_for(project_name, name)
 
 
 @project.group('config')

@@ -44,7 +44,7 @@ class ProjectRepository:
         ''' Returns whether project with given name is present in the repository. '''
         return project_name in self._data
 
-    def __get_item__(self, project_name: str) -> ProjectItemData:
+    def __getitem__(self, project_name: str) -> ProjectItemData:
         ''' Returns data for project in the repository with given name. '''
         if project_name not in self._data:
             raise KeyError(f"Project with name '{project_name}' not found")
@@ -57,9 +57,14 @@ class ProjectRepository:
     def add_project(self, project_name: str, project_source_path: str, *, 
                     project_config_path: str| None = None) -> None:
         ''' Adds new project to repository with given name and source path (optionally, a non-standard config path). '''
-        if project_name in self:
-            raise KeyError(f"Project with name '{project_name}' already exists.")
-        self._data.add_project(ProjectItemData({}, name=project_name, source_path=project_source_path, config_path=project_config_path))
+        self.add_project_from_data(ProjectItemData({}, name=project_name, source_path=project_source_path, config_path=project_config_path))
+
+    def add_project_from_data(self, data: ProjectItemData) -> None:
+        ''' Adds new project to repository using pre-made item data. '''
+        if data.name in self:
+            raise KeyError(f"Project with name '{data.name}' already exists.")
+        self._data.add_project(data)
+
 
     def remove_project(self, project_name: str) -> None:
         ''' Removes project with given name to the repository. '''

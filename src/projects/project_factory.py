@@ -16,7 +16,14 @@ class ProjectFactory():
     def project_items(self) -> Iterable[ProjectItemData]:
         ''' Allows to iterate over project data items registered in project repository. '''
         return iter(self._repository)
-    
+
+    def item_for(self, project_name: str) -> ProjectItemData:
+        ''' Gets project data item for given registered project in repository. '''
+        if project_name not in self._repository:
+            raise KeyError(f"Project '{project_name}' is not registered in reef project repository.")
+        return self._repository[project_name]
+
+
     def __contains__(self, project_name: str) -> bool:
         ''' Checks whether reef project with given name is registered. '''
         return project_name in self._repository.project_names
@@ -26,6 +33,23 @@ class ProjectFactory():
         if project_name not in self._repository:
             raise KeyError(f"Project '{project_name}' is not registered in reef project repository.")
         return self._get_project_impl(project_name)
+
+
+    def add(self, project: Project) -> None:
+        ''' Adds given project to the repository. '''
+        if project.name in self._repository:
+            raise KeyError(f"Project with name '{project.name}' is already registered in reef project repository.")
+        self._repository.add_project_from_data(project.info)
+        self._repository.save()
+        self._project_cache[project.name] = project
+        
+
+    def remove(self, project_name: str) -> None:
+        ''' Removes named project to the repository. '''
+        if project_name not in self._repository:
+            raise KeyError(f"Project '{project_name}' is not registered in reef project repository.")
+        self._repository.remove_project(project_name)
+        self._repository.save()
 
 
     @property
@@ -40,7 +64,6 @@ class ProjectFactory():
         return self._get_project_impl(self.default_project_name) if self.default_project_name is not None else None
 
 
-    @property
     def change_default_project(self, project_name: str) -> None:
         ''' Changes project set as default to the one given by name. '''
         if project_name not in self._repository:
@@ -49,6 +72,24 @@ class ProjectFactory():
             return
         
         self._repository.default_project_name = project_name
+        self._repository.save()
+
+
+    def get_default_module_name_for(self, project_name: str) -> str | None:
+        ''' Returns name of a module set as a default for a project, or None if not set. '''
+        if project_name not in self._repository:
+            raise KeyError(f"Project '{project_name}' is not registered in reef project repository.")
+        return self._repository[project_name].default_module
+
+
+    def change_default_module_for(self, project_name: str, module_name: str) -> None:
+        ''' Changes module set as default for a project to the one given by name. '''
+        if project_name not in self._repository:
+            raise KeyError(f"Project '{project_name}' is not registered in reef project repository.")
+        if module_name == self.get_default_module_name_for(project_name):
+            return
+        
+        self._repository[project_name].default_module = module_name
         self._repository.save()
 
 
