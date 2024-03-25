@@ -1,4 +1,6 @@
-class ProjectDetailsSettings():
+from ...settings_base import SettingsBase
+
+class ProjectDetailsSettings(SettingsBase):
     '''
     Contains data on project info details.
     '''

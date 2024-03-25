@@ -1,6 +1,7 @@
 
 from .project_temp_build_settings import ProjectTempBuildSettings
 from .project_temp_hierarchy_settings import ProjectTempHierarchySettings
+from ...settings_base import SettingsBase
 
 def __is_int(value):
     try:
@@ -10,7 +11,7 @@ def __is_int(value):
         return False
 
 
-class ProjectTempSettings():
+class ProjectTempSettings(SettingsBase):
     '''
     Contains temporary project settings.
     '''

@@ -6,10 +6,11 @@ from .project_details_settings import ProjectDetailsSettings
 from .project_cmake_settings import ProjectCMakeSettings
 from .project_languages_settings import ProjectLanguagesSettings
 from .project_temp_settings import ProjectTempSettings
+from ...settings_base import SettingsBase
 
 _PROJECT_TOP_LEVEL_SETTINGS_FILENAME = "project.json"
 
-class ProjectSettings():
+class ProjectSettings(SettingsBase):
     '''
     Contains project settings data.
     '''

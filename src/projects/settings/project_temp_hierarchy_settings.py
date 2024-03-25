@@ -1,6 +1,8 @@
 from os import path
 
-class ProjectTempHierarchySettings():
+from ...settings_base import SettingsBase
+
+class ProjectTempHierarchySettings(SettingsBase):
     '''
     Contains temporary project settings related to project's directory structure.
     '''

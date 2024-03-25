@@ -1,4 +1,4 @@
-from typing import Iterable
+from typing import Iterable, Any
 from os import path
 from shutil import rmtree
 
@@ -57,12 +57,13 @@ class ProjectManager():
         ### TODO
         raise NotImplementedError("Refresh functionality not yet implemented.")
 
-
-    def describe(self, project_name=None):
-        """
-            describe
-        """
-        pass
+    def describe(self, project_name: str | None = None, verbose: bool = False):
+        ''' Prints configuration information for given project. '''
+        if project_name is None:
+            project_name = self.default_project_name
+        if project_name not in self._factory:
+            raise KeyError(f"Project with name '{project_name}' not found.")
+        self._factory[project_name].describe(verbose)
 
     def create(self, project_name: str, project_template_name: str, base_path: str) -> None:
         ''' Creates a new project with config based on given template in new directory named as project located in bae path given. '''
@@ -133,47 +134,38 @@ class ProjectManager():
         ''' Changes module set as default for a project to the one given by name. '''
         return self._factory.change_default_module_for(project_name, module_name)
 
+    def _config_process_project_name(self, project_name: str | None = None) -> str:
+        ''' Validates project name if given, or returns default project name if None is given. '''
+        if project_name is None:
+            project_name = self.default_project_name
+        if project_name not in self._factory:
+            raise KeyError(f"Project with name '{project_name}' not found.")
+        return project_name
 
-    def config_get_entry(self, key, project_name=None):
-        """
-            config_get_entry
-        """
-        pass
+    def config_get_entry(self, key: str, project_name: str | None = None) -> Any:
+        ''' Returns value for setting given by key for a specified (or default) project. '''
+        return self._factory[self._config_process_project_name(project_name)].get(key)
 
-    def config_set_entry(self, key, value, project_name=None):
-        """
-            config_set_entry
-        """
-        pass
+    def config_set_entry(self, key: str, value: str, project_name: str | None = None) -> None:
+        ''' Sets value for a setting given by key for a specified (or default) project. '''
+        return self._factory[self._config_process_project_name(project_name)].set(key, value)
 
-    def config_list_entries(self, key, project_name=None):
-        """
-            config_list_entries
-        """
-        pass
+    def config_list_entries(self, project_name: str | None = None) -> None:
+        ''' Lists value for all settings for a specified (or default) project. '''
+        return self._factory[self._config_process_project_name(project_name)].describe(config_only = True)
 
-    def config_reset_entry(self, key, project_name=None):
-        """
-            config_reset_entry
-        """
-        pass
+    def config_unset_entry(self, key: str, project_name: str | None = None) -> None:
+        ''' Unsets (to default value) the setting given by key for a specified (or default) project. '''
+        return self.config_set_entry(key, None, project_name)
 
-    def config_add_entry_item(self, key, value, project_name=None):
-        """
-            config_add_entry_item
-        """
-        pass
+    def config_add_entry_item(self, key: str, value: str, project_name: str | None = None):
+        ''' Adds an entry to the list-like setting given by key for a specified (or default) project. '''
+        return self._factory[self._config_process_project_name(project_name)].add_item(key, value)
 
-    def config_remove_entry_item(self, key, value, project_name=None):
-        """
-            config_remove_entry_item
-        """
-        pass
+    def config_remove_entry_item(self, key: str, value: str, project_name: str | None = None):
+        ''' Removess an entry from the list-like setting given by key for a specified (or default) project. '''
+        return self._factory[self._config_process_project_name(project_name)].remove_item(key, value)
 
-    def config_clear_entry_items(self, key, project_name=None):
-        """
-            config_clear_entry_items
-        """
-        pass
-
-
+    def config_clear_entry_items(self, key: str, project_name: str | None = None):
+        ''' Clears all items from the list-like setting given by key for a specified (or default) project. '''
+        return self._factory[self._config_process_project_name(project_name)].clear_items(key)

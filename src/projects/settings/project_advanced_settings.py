@@ -1,4 +1,6 @@
-class ProjectAdvancedSettings():
+from ...settings_base import SettingsBase
+
+class ProjectAdvancedSettings(SettingsBase):
     '''
     Contains advanced project settings.
     '''

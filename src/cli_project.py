@@ -56,15 +56,13 @@ def project_list(ctx):
 
 @project.command('describe')
 @click.option('--project', '-p', default='', help="Name of project to describe")
+@click.option('--verbose', '-v', is_flag=True, help="Verbose mode (include unset properties with default values)")
 @click.pass_context
-def project_describe(project, ctx):
-    """
-            Displays information on given reef project.
-    """
-
+def project_describe(project, verbose, ctx):
+    ''' Displays more information and settings used in given reef project. '''
     manager = ctx.obj['project_manager']
     project_name = _resolve_project_name(ctx, project)
-    manager.describe(project_name)
+    manager.describe(project_name, verbose)
 
 
 @project.command('create')
@@ -160,10 +158,7 @@ def project_config(ctx):
 @project_config.group('list')
 @click.pass_context
 def project_config_list(ctx):
-    """
-            Lists configuration items for given reef project.
-    """
-
+    ''' Lists configuration items for given reef project. '''
     manager = ctx.obj['project_manager']
     project_name = _resolve_project_name(ctx, '')
     manager.config_list_entries(project_name)
@@ -173,10 +168,7 @@ def project_config_list(ctx):
 @click.argument('key')
 @click.pass_context
 def project_config_get(key, ctx):
-    """
-            Gets value of given configuration item.
-    """
-
+    ''' Gets value of given configuration item. '''
     manager = ctx.obj['project_manager']
     project_name = _resolve_project_name(ctx, '')
     print(manager.config_get_entry(key, project_name))
@@ -187,10 +179,7 @@ def project_config_get(key, ctx):
 @click.argument('value')
 @click.pass_context
 def project_config_set(key, value, ctx):
-    """
-            Sets value of given configuration item.
-    """
-
+    ''' Sets value of given configuration item. '''
     manager = ctx.obj['project_manager']
     project_name = _resolve_project_name(ctx, '')
     manager.config_set_entry(key, value, project_name)
@@ -200,10 +189,7 @@ def project_config_set(key, value, ctx):
 @click.argument('key')
 @click.pass_context
 def project_config_reset(key, ctx):
-    """
-            Resets given configuration item to its default value.
-    """
-
+    ''' Resets given configuration item to its default value. '''
     manager = ctx.obj['project_manager']
     project_name = _resolve_project_name(ctx, '')
     manager.config_reset_entry(key, project_name)
@@ -214,10 +200,7 @@ def project_config_reset(key, ctx):
 @click.argument('value')
 @click.pass_context
 def project_config_add_item(key, value, ctx):
-    """
-            Adds value to list for given configuration item.
-    """
-
+    ''' Adds value to list for given configuration item. '''
     manager = ctx.obj['project_manager']
     project_name = _resolve_project_name(ctx, '')
     manager.config_add_entry_item(key, value, project_name)
@@ -228,10 +211,7 @@ def project_config_add_item(key, value, ctx):
 @click.argument('value')
 @click.pass_context
 def project_config_remove_item(key, value, ctx):
-    """
-            Removes value from list for given configuration item.
-    """
-
+    ''' Removes value from list for given configuration item. '''
     manager = ctx.obj['project_manager']
     project_name = _resolve_project_name(ctx, '')
     manager.config_remove_entry_item(key, value, project_name)
@@ -241,10 +221,7 @@ def project_config_remove_item(key, value, ctx):
 @click.argument('key')
 @click.pass_context
 def project_config_clear_items(key, ctx):
-    """
-            Removes all values from list for given configuration item.
-    """
-
+    ''' Removes all values from list for given configuration item. '''
     manager = ctx.obj['project_manager']
     project_name = _resolve_project_name(ctx, '')
     manager.config_clear_entry_items(key, project_name)

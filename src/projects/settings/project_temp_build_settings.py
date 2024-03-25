@@ -1,4 +1,6 @@
-class ProjectTempBuildSettings():
+from ...settings_base import SettingsBase
+
+class ProjectTempBuildSettings(SettingsBase):
     '''
     Contains temporary project settings related to build options.
     '''

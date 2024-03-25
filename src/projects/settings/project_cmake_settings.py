@@ -1,3 +1,5 @@
+from ...settings_base import SettingsBase
+
 def __is_int(value):
     try:
         int(value)
@@ -6,7 +8,7 @@ def __is_int(value):
         return False
 
 
-class ProjectCMakeSettings():
+class ProjectCMakeSettings(SettingsBase):
     '''
     Contains project settings specific for CMake.
     '''

@@ -1,4 +1,5 @@
 from os import path, mkdir
+from typing import Any
 
 from .settings.project_settings import ProjectSettings
 from .repository.data.project_item_data import ProjectItemData
@@ -37,6 +38,35 @@ class Project():
     def is_config_inplace(self) -> bool:
         ''' Indicates whether given project stores its reef configuration inplace. '''
         return self._info.is_config_inplace
+
+
+    def describe(self, verbose: bool = False, config_only: bool = False) -> None:
+        if not config_only:
+            print(f"NAME:        {self.name}")
+            print(f"SOURCE PATH: {self.source_path}")
+            print(f"CONFIG PATH: {'(IN)' if self.is_config_inplace else '(OUT)'} {self.config_path}")
+            print("PROJECT SETTINGS:")
+        self._settings.print_properties(skip_unset=not verbose)
+
+    def get(self, key: str) -> Any:
+        ''' Returns value for setting given by key. '''
+        return self._settings.get(key)
+
+    def config_set_entry(self, key: str, value: str, project_name: str | None = None) -> None:
+        ''' Sets value for a setting given by key. '''
+        return self._settings.set(key, value)
+
+    def config_add_entry_item(self, key: str, value: str, project_name: str | None = None):
+        ''' Adds an entry to the list-like setting given by key. '''
+        raise NotImplementedError("List-like project setting are not yey implemented.")
+
+    def config_remove_entry_item(self, key: str, value: str, project_name: str | None = None):
+        ''' Removess an entry from the list-like setting given by key. '''
+        raise NotImplementedError("List-like project setting are not yey implemented.")
+
+    def config_clear_entry_items(self, key: str, project_name: str | None = None):
+        ''' Clears all items from the list-like setting given by key. '''
+        raise NotImplementedError("List-like project setting are not yey implemented.")
 
 
     def reload_settings(self) -> None:

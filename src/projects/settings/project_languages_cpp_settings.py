@@ -1,4 +1,6 @@
-class ProjectLanguagesCppSettings():
+from ...settings_base import SettingsBase
+
+class ProjectLanguagesCppSettings(SettingsBase):
     '''
     Contains project settings specific to C++ language.
     '''
