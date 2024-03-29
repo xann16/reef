@@ -6,10 +6,10 @@ from .settings.project_settings import ProjectSettings
 
 
 class Project:
-    ''' Represents data and functionality for Reef projects. '''
+    """Represents data and functionality for Reef projects."""
 
     def __init__(self, info: ProjectItemData, *, settings: ProjectSettings | None = None):
-        ''' Initializes repository given loaded project list data. '''
+        """Initializes repository given loaded project list data."""
         self._info: ProjectItemData = info
         self._settings: ProjectSettings | None = settings
 
@@ -19,27 +19,25 @@ class Project:
         assert self._settings is not None
         assert self._settings.name == self._info.name
 
-
     @property
     def name(self) -> str:
-        ''' Name of a project. '''
+        """Name of a project."""
         return self._info.name
 
     @property
     def config_path(self) -> str:
-        ''' Path where project reef configuration files are located. '''
+        """Path where project reef configuration files are located."""
         return self._info.config_path
 
     @property
     def source_path(self) -> str:
-        ''' Path where reef project source is located. '''
+        """Path where reef project source is located."""
         return self._info.config_path
 
     @property
     def is_config_inplace(self) -> bool:
-        ''' Indicates whether given project stores its reef configuration inplace. '''
+        """Indicates whether given project stores its reef configuration inplace."""
         return self._info.is_config_inplace
-
 
     def describe(self, verbose: bool = False, config_only: bool = False) -> None:
         if not config_only:
@@ -50,38 +48,37 @@ class Project:
         self._settings.print_properties(skip_unset=not verbose)
 
     def get(self, key: str) -> Any:
-        ''' Returns value for setting given by key. '''
+        """Returns value for setting given by key."""
         return self._settings.get(key)
 
     def config_set_entry(self, key: str, value: str, project_name: str | None = None) -> None:
-        ''' Sets value for a setting given by key. '''
+        """Sets value for a setting given by key."""
         return self._settings.set(key, value)
 
     def config_add_entry_item(self, key: str, value: str, project_name: str | None = None):
-        ''' Adds an entry to the list-like setting given by key. '''
+        """Adds an entry to the list-like setting given by key."""
         raise NotImplementedError("List-like project setting are not yey implemented.")
 
     def config_remove_entry_item(self, key: str, value: str, project_name: str | None = None):
-        ''' Removess an entry from the list-like setting given by key. '''
+        """Removess an entry from the list-like setting given by key."""
         raise NotImplementedError("List-like project setting are not yey implemented.")
 
     def config_clear_entry_items(self, key: str, project_name: str | None = None):
-        ''' Clears all items from the list-like setting given by key. '''
+        """Clears all items from the list-like setting given by key."""
         raise NotImplementedError("List-like project setting are not yey implemented.")
 
-
     def reload_settings(self) -> None:
-        ''' Loads or reloads settings from default JSON config file. '''
+        """Loads or reloads settings from default JSON config file."""
         self._settings = ProjectSettings.load_from_json(self.config_path)
 
     def save_settings(self) -> None:
-        ''' Saves current project settings to default JSON config file. '''
+        """Saves current project settings to default JSON config file."""
         self._settings.save_to_json(self.config_path)
 
     def initialize_inplace_settings(self) -> None:
-        ''' Given proper settings, it initializes proper in-place config directory and settings file there. '''
+        """Given proper settings, it initializes proper in-place config directory and settings file there."""
         if not self.is_config_inplace:
-            raise ValueError('Inplace config initialization works only for projects with inplace configuration.')
+            raise ValueError("Inplace config initialization works only for projects with inplace configuration.")
         if path.exists(self.config_path):
             raise FileExistsError(f"Reef config at '{self.config_path}' already exists.")
         if not path.exists(self.source_path):
@@ -89,4 +86,3 @@ class Project:
         if not path.exists(self.config_path):
             mkdir(self.config_path)
         self.save_settings()
-

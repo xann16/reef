@@ -6,8 +6,8 @@ CONFIG_PATH_ENV_VAR_NAME = "REEF_CONFIG"
 CONFIG_FILE_NAME = "config.json"
 CONFIG_PROJECT_DIR = "projects"
 
-class Config:
 
+class Config:
     def __init__(self, config_path, exec_path, version) -> None:
         super().__init__()
 
@@ -29,15 +29,15 @@ class Config:
 
     @property
     def version_major(self) -> str:
-        return int(self._version.split('.')[0])
+        return int(self._version.split(".")[0])
 
     @property
     def version_minor(self) -> str:
-        return int(self._version.split('.')[1])
+        return int(self._version.split(".")[1])
 
     @property
     def version_patch(self) -> str:
-        return int(self._version.split('.')[2])
+        return int(self._version.split(".")[2])
 
     @property
     def config_file_path(self) -> str:
@@ -51,8 +51,8 @@ class Config:
         result = ""
 
         result += "Directories:" + "\n"
-        result += " - config:     " + self.config_path + '\n'
-        result += " - executable: " + self.exec_path + '\n'
+        result += " - config:     " + self.config_path + "\n"
+        result += " - executable: " + self.exec_path + "\n"
 
         return result
 
@@ -72,13 +72,9 @@ class Config:
     def save_as_json(self, dirpath, verbose=False) -> None:
         filepath = Config._filepath(dirpath)
         if verbose:
-            print(f"Saving current config in '{filepath}'... ", end='')
+            print(f"Saving current config in '{filepath}'... ", end="")
 
-        data = {
-            "config_path": self.config_path,
-            "exec_path": self.exec_path,
-            "version": self.version
-        }
+        data = {"config_path": self.config_path, "exec_path": self.exec_path, "version": self.version}
 
         ensure_dir(dirpath)
         dump_json(filepath, data)
@@ -108,15 +104,15 @@ class Config:
         COMMENT = "# !! Contents within this block are managed by 'reef init' !!"
         OUTRO = "# <<< reef initialize <<<"
 
-        rcpath = path.abspath(path.expanduser('~/.bashrc'))
+        rcpath = path.abspath(path.expanduser("~/.bashrc"))
 
         if verbose:
-            print(f"Opening and updating '{rcpath}' shell config... ", end='')
+            print(f"Opening and updating '{rcpath}' shell config... ", end="")
 
         # load shell rc file (withoud already present reef section, if any)
         is_reef = False
         new_lines = []
-        with open(rcpath, encoding='utf-8') as fp:
+        with open(rcpath, encoding="utf-8") as fp:
             for line in fp:
                 if line.strip().startswith(INTRO):
                     is_reef = True
@@ -139,7 +135,7 @@ class Config:
         new_lines.append("\n")
 
         # overwriting new shell rc file
-        with open(rcpath, mode='w', encoding='utf-8') as fp:
+        with open(rcpath, mode="w", encoding="utf-8") as fp:
             fp.writelines(new_lines)
 
         if verbose:
