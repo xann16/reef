@@ -1,5 +1,6 @@
 from ...settings_base import SettingsBase
 
+
 class ProjectTempBuildSettings(SettingsBase):
     '''
     Contains temporary project settings related to build options.
@@ -14,12 +15,12 @@ class ProjectTempBuildSettings(SettingsBase):
         Constructs ProjectTempBuildSettings object from item dictionary or manual property value overrides.
         '''
         self.mode = mode if mode is not None else (obj['mode'] if 'mode' in obj else None)
-        
+
     @property
     def mode(self):
         ''' Build mode. '''
         return self._mode if self._mode is not None else self._BUILD_MODES[0]
-    
+
     @mode.setter
     def mode(self, mode):
         ''' Build mode. '''
@@ -35,9 +36,9 @@ class ProjectTempBuildSettings(SettingsBase):
     def to_dict(self):
         ''' Returns ProjectTempBuildSettings as a dictionary with its properties (convenient for conversion to JSON). '''
         result = {}
-        
+
         if self._mode is not None:
             result['mode'] = self.mode
 
         return result if any(result) else None
-    
+

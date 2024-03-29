@@ -1,5 +1,6 @@
 from ...settings_base import SettingsBase
 
+
 class ProjectAdvancedSettings(SettingsBase):
     '''
     Contains advanced project settings.
@@ -14,12 +15,12 @@ class ProjectAdvancedSettings(SettingsBase):
         Constructs ProjectAdvancedSettings object from item dictionary or manual property value overrides.
         '''
         self.compile_commands_export_policy = compile_commands_export_policy if compile_commands_export_policy is not None else (obj['compile_commands_export_policy'] if 'compile_commands_export_policy' in obj else None)
-        
+
     @property
     def compile_commands_export_policy(self):
         ''' Policy for exporting 'compile_commands.json' file. '''
         return self._compile_commands_export_policy if self._compile_commands_export_policy is not None else self._COMPILE_COMMANDS_EXPORT_POLICIES[0]
-    
+
     @compile_commands_export_policy.setter
     def compile_commands_export_policy(self, compile_commands_export_policy):
         ''' Policy for exporting 'compile_commands.json' file. '''
@@ -35,9 +36,9 @@ class ProjectAdvancedSettings(SettingsBase):
     def to_dict(self):
         ''' Returns ProjectAdvancedSettings as a dictionary with its properties (convenient for conversion to JSON). '''
         result = {}
-        
+
         if self._compile_commands_export_policy is not None:
             result['compile_commands_export_policy'] = self.compile_commands_export_policy
-        
+
         return result if any(result) else None
-    
+

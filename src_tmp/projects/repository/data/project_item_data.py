@@ -1,7 +1,8 @@
 from os import path
 from typing import Any
 
-class ProjectItemData():
+
+class ProjectItemData:
     '''
     Contains data of a project item stored in the project repository.
     '''
@@ -20,12 +21,12 @@ class ProjectItemData():
         self.config_path = config_path if config_path is not None else (obj['config_path'] if 'config_path' in obj else None)
         self.default_module = default_module if default_module is not None else (obj['default_module'] if 'default_module' in obj else None)
 
-        
+
     @property
     def name(self) -> str:
         ''' Project name. '''
         return self._name
-    
+
     @name.setter
     def name(self, name: str) -> None:
         ''' Project name. '''
@@ -42,7 +43,7 @@ class ProjectItemData():
     def source_path(self) -> str:
         ''' Path to the top-level directory where project's source files are contained. '''
         return self._source_path
-    
+
     @source_path.setter
     def source_path(self, source_path: str) -> None:
         ''' Path to the top-level directory where project's source files are contained. '''
@@ -59,7 +60,7 @@ class ProjectItemData():
     def config_path(self) -> str:
         ''' Path where project's Reef config files are contained. '''
         return self._config_path if self._config_path is not None else path.join(self._source_path, '.reef')
-    
+
     @config_path.setter
     def config_path(self, config_path: str | None):
         ''' Path where project's Reef config files are contained. '''
@@ -80,7 +81,7 @@ class ProjectItemData():
     def default_module(self) -> str | None:
         ''' Module used as default when working with this project. '''
         return self._default_module
-    
+
     @default_module.setter
     def default_module(self, default_module: str | None) -> None:
         ''' Module used as default when working with this project. '''
@@ -98,7 +99,7 @@ class ProjectItemData():
             'name': self.name,
             'source_path': self.source_path
         }
-    
+
         if self._config_path is not None:
             result['config_path'] = self.config_path
         if self._default_module is not None:

@@ -1,5 +1,6 @@
-from .project_languages_cpp_settings import ProjectLanguagesCppSettings
 from ...settings_base import SettingsBase
+from .project_languages_cpp_settings import ProjectLanguagesCppSettings
+
 
 class ProjectLanguagesSettings(SettingsBase):
     '''
@@ -18,7 +19,7 @@ class ProjectLanguagesSettings(SettingsBase):
     def cpp(self):
         ''' Contains project settings specific for the C++ language. '''
         return self._cpp if self._cpp is not None else ProjectLanguagesCppSettings()
-    
+
     @cpp.setter
     def cpp(self, cpp):
         ''' Contains temporary build settings for a project. '''

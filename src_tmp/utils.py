@@ -1,9 +1,9 @@
 import json
-from os import path, makedirs
+from os import makedirs, path
 
 
 def load_json(filepath):
-    with open(filepath, mode='r', encoding='utf-8') as fp:
+    with open(filepath, encoding='utf-8') as fp:
         return json.load(fp)
 
 

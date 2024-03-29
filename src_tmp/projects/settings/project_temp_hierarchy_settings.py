@@ -1,6 +1,6 @@
-from os import path
 
 from ...settings_base import SettingsBase
+
 
 class ProjectTempHierarchySettings(SettingsBase):
     '''
@@ -20,12 +20,12 @@ class ProjectTempHierarchySettings(SettingsBase):
         self.type = type if type is not None else (obj['type'] if 'type' in obj else None)
         self.is_multiproject = is_multiproject if is_multiproject is not None else (obj['is_multiproject'] if 'is_multiproject' in obj else None)
         self.separate_public_includes = separate_public_includes if separate_public_includes is not None else (obj['separate_public_includes'] if 'separate_public_includes' in obj else None)
-        
+
     @property
     def type(self):
         ''' Directory hierarchy type. '''
         return self._type if self._type is not None else self._HIERARCHY_TYPES[0]
-    
+
     @type.setter
     def type(self, type):
         ''' Directory hierarchy type. '''
@@ -43,7 +43,7 @@ class ProjectTempHierarchySettings(SettingsBase):
     def is_multiproject(self):
         ''' Indicates whether project hierarchy allows for multiple modules or just one. '''
         return self._is_multiproject if self._is_multiproject else True
-    
+
     @is_multiproject.setter
     def is_multiproject(self, is_multiproject):
         ''' Indicates whether project hierarchy allows for multiple modules or just one. '''
@@ -57,7 +57,7 @@ class ProjectTempHierarchySettings(SettingsBase):
     def separate_public_includes(self):
         ''' Indicates whether project uses separate directory for public includes (headers) or not. '''
         return self._separate_public_includes if self._separate_public_includes else True
-    
+
     @separate_public_includes.setter
     def separate_public_includes(self, separate_public_includes):
         ''' Indicates whether project uses separate directory for public includes (headers) or not. '''
@@ -70,13 +70,13 @@ class ProjectTempHierarchySettings(SettingsBase):
     def to_dict(self):
         ''' Returns ProjectTempHierarchySettings as a dictionary with its properties (convenient for conversion to JSON). '''
         result = {}
-        
+
         if self._type is not None:
             result['type'] = self.type
         if self._is_multiproject is not None:
             result['is_multiproject'] = self.is_multiproject
         if self._separate_public_includes is not None:
             result['separate_public_includes'] = self.separate_public_includes
-        
+
         return result if any(result) else None
-    
+

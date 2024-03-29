@@ -1,19 +1,20 @@
-from typing import Iterable, Any
 from os import path
 from shutil import rmtree
+from typing import Any, Iterable
 
-from .project_factory import ProjectFactory
-from .repository.project_repository import ProjectRepository
-from .repository.data.project_item_data import ProjectItemData
 from .project import Project
+from .project_factory import ProjectFactory
 from .project_templates.project_template_repository import ProjectTemplateRepository
+from .repository.data.project_item_data import ProjectItemData
+from .repository.project_repository import ProjectRepository
 from .settings.project_settings import ProjectSettings
 
-class ProjectManager():
+
+class ProjectManager:
     ''' Manages all operations concerning the management of Reef projects. '''
 
-    def __init__(self, 
-                 factory: ProjectFactory | None = None, 
+    def __init__(self,
+                 factory: ProjectFactory | None = None,
                  repository_path: str | None = None,
                  template_repository: ProjectTemplateRepository | None = None):
         ''' Creates project manager with injected project factory, or path to the underlying project data repository. '''
@@ -54,7 +55,7 @@ class ProjectManager():
 
     def refresh(self, project_name: str) -> None:
         ''' Regenerate project files handled by reef. '''
-        ### TODO
+        # TODO
         raise NotImplementedError("Refresh functionality not yet implemented.")
 
     def describe(self, project_name: str | None = None, verbose: bool = False):
@@ -67,7 +68,7 @@ class ProjectManager():
 
     def create(self, project_name: str, project_template_name: str, base_path: str) -> None:
         ''' Creates a new project with config based on given template in new directory named as project located in bae path given. '''
-        
+
         if not project_name:
             raise ValueError('Projecn name cannot be empty')
         if project_template_name:
@@ -78,7 +79,7 @@ class ProjectManager():
         root_path = path.abspath(path.realpath(path.expanduser(base_path)))
         project_path = path.join(root_path, project_name)
         info = ProjectItemData(None, name=project_name, source_path=project_path)
-        
+
         config_data = self._templates.empty
         config_data['name'] = project_name
         settings = ProjectSettings(config_data)
@@ -95,12 +96,12 @@ class ProjectManager():
             raise FileNotFoundError(f"Base path for project import, '{base_path}', does not exist")
 
         project_path = path.abspath(path.realpath(path.expanduser(base_path)))
-        config_path = path.join(project_path, '.reef')              # TODO: extract magic strings            
-        config_file_path = path.join(config_path, 'project.json')   # TODO: extract magic strings            
-        
+        config_path = path.join(project_path, '.reef')              # TODO: extract magic strings
+        config_file_path = path.join(config_path, 'project.json')   # TODO: extract magic strings
+
         if not path.exists(config_file_path):
             raise FileNotFoundError(f"Config file could not be found at: '{config_file_path}'. Given path does not seem to contain a reef project.")
-        
+
         settings = ProjectSettings.load_from_json(config_path)
         if project_name:
             settings.name = project_name
@@ -152,7 +153,7 @@ class ProjectManager():
 
     def config_list_entries(self, project_name: str | None = None) -> None:
         ''' Lists value for all settings for a specified (or default) project. '''
-        return self._factory[self._config_process_project_name(project_name)].describe(config_only = True)
+        return self._factory[self._config_process_project_name(project_name)].describe(config_only=True)
 
     def config_unset_entry(self, key: str, project_name: str | None = None) -> None:
         ''' Unsets (to default value) the setting given by key for a specified (or default) project. '''

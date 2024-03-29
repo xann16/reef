@@ -1,13 +1,13 @@
-from typing import Iterable, Any
+from typing import Any, Iterable
 
 _SPACES_PER_INDENT_LEVEL = 2
 _LIST_POINT_CHARACTER = '-'
 _VALUE_SEPARATOR = ':'
 
-class SettingsBase():
+class SettingsBase:
 
-    def print_properties(self, *, 
-                         indent_level: int = 0, 
+    def print_properties(self, *,
+                         indent_level: int = 0,
                          skip_unset: bool = True,
                          recurse: bool = True) -> None:
         for property_name in self.__list_property_names():
@@ -55,7 +55,7 @@ class SettingsBase():
             raise KeyError(f"No property '{property_name}' found in class '{type(self)}'")
         return getattr(self, property_name)
 
-    def __set_value(self, property_name:str , value: Any) -> None:
+    def __set_value(self, property_name: str, value: Any) -> None:
         if not self.__is_property(property_name):
             raise KeyError(f"No property '{property_name}' found in class '{type(self)}'")
         return setattr(self, property_name, value)

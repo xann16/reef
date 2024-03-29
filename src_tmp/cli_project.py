@@ -1,19 +1,19 @@
-import click
 from os import path
 
-from .config import Config
+import click
+
 from .projects.project_manager import ProjectManager
 
 PROJECT_REPOSITORY_JSON_FILEPATH = "projects.json"
 
 def _resolve_project_name(ctx, override=None, is_override_required=False):
     if is_override_required and not override:
-        assert False # TODO
+        assert False  # TODO
     if override:
         return override
-    if 'project' in ctx.obj and ctx.obj['project']:
+    if ctx.obj.get('project'):
         return ctx.obj['project']
-    return None 
+    return None
 
 
 @click.group('project')
@@ -152,7 +152,6 @@ def project_config(ctx):
     """
             Handles configuration specific for given reef project.
     """
-    pass
 
 
 @project_config.group('list')

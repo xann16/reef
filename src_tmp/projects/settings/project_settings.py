@@ -1,12 +1,12 @@
 import json
 from os import path
 
+from ...settings_base import SettingsBase
 from .project_advanced_settings import ProjectAdvancedSettings
-from .project_details_settings import ProjectDetailsSettings
 from .project_cmake_settings import ProjectCMakeSettings
+from .project_details_settings import ProjectDetailsSettings
 from .project_languages_settings import ProjectLanguagesSettings
 from .project_temp_settings import ProjectTempSettings
-from ...settings_base import SettingsBase
 
 _PROJECT_TOP_LEVEL_SETTINGS_FILENAME = "project.json"
 
@@ -39,12 +39,12 @@ class ProjectSettings(SettingsBase):
         self.cmake = cmake if cmake is not None else (ProjectCMakeSettings(obj['cmake']) if 'cmake' in obj else None)
         self.temp = temp if temp is not None else (ProjectTempSettings(obj['temp']) if 'temp' in obj else None)
 
-        
+
     @property
     def name(self):
         ''' Project name. '''
         return self._name
-    
+
     @name.setter
     def name(self, name):
         ''' Project name. '''
@@ -60,7 +60,7 @@ class ProjectSettings(SettingsBase):
     def name_short(self):
         ''' Short version of project name. '''
         return self._name_short if self._name_short is not None else self.name
-    
+
     @name_short.setter
     def name_short(self, name_short):
         ''' Short version of project name. '''
@@ -75,7 +75,7 @@ class ProjectSettings(SettingsBase):
     def default_language(self):
         ''' Default language used by the project. '''
         return self._default_language if self._default_language is not None else self._SUPPORTED_LANGUAGES[0]
-    
+
     @default_language.setter
     def default_language(self, default_language):
         ''' Default language used by the project. '''
@@ -92,7 +92,7 @@ class ProjectSettings(SettingsBase):
     def details(self):
         ''' Contains detailed info project settings. '''
         return self._details if self._details is not None else ProjectDetailsSettings()
-    
+
     @details.setter
     def details(self, details):
         ''' Contains detailed info project settings. '''
@@ -105,7 +105,7 @@ class ProjectSettings(SettingsBase):
     def advanced(self):
         ''' Contains advanced settings for a project. '''
         return self._advanced if self._advanced is not None else ProjectAdvancedSettings()
-    
+
     @advanced.setter
     def advanced(self, advanced):
         ''' Contains advanced settings for a project. '''
@@ -118,7 +118,7 @@ class ProjectSettings(SettingsBase):
     def languages(self):
         ''' Contains language-specific settings for a project. '''
         return self._languages if self._languages is not None else ProjectLanguagesSettings()
-    
+
     @languages.setter
     def languages(self, languages):
         ''' Contains language-specific settings for a project. '''
@@ -131,7 +131,7 @@ class ProjectSettings(SettingsBase):
     def cmake(self):
         ''' Contains CMake-specific settings for a project. '''
         return self._cmake if self._cmake is not None else ProjectCMakeSettings()
-    
+
     @cmake.setter
     def cmake(self, cmake):
         ''' Contains CMake-specific settings for a project. '''
@@ -144,7 +144,7 @@ class ProjectSettings(SettingsBase):
     def temp(self):
         ''' Contains temporary settings for a project. '''
         return self._temp if self._temp is not None else ProjectTempSettings()
-    
+
     @temp.setter
     def temp(self, temp):
         ''' Contains temporary settings for a project. '''
@@ -158,7 +158,7 @@ class ProjectSettings(SettingsBase):
         result = {
             "name": self.name
         }
-    
+
         if self._name_short is not None:
             result['name_short'] = self.name_short
         if self._default_language is not None:
@@ -180,10 +180,10 @@ class ProjectSettings(SettingsBase):
     @staticmethod
     def load_from_json(self, config_path: str):
         ''' Load project settings from default JSON file in the config directory. '''
-        with open(path.join(config_path, _PROJECT_TOP_LEVEL_SETTINGS_FILENAME), 'r', encoding='utf-8') as fp:
+        with open(path.join(config_path, _PROJECT_TOP_LEVEL_SETTINGS_FILENAME), encoding='utf-8') as fp:
             settings_data = json.load(fp)
             return ProjectSettings(settings_data)
-        
+
     def save_to_json(self, config_path: str) -> None:
         ''' Save project settings to default JSON file in the config directory. '''
         with open(path.join(config_path, _PROJECT_TOP_LEVEL_SETTINGS_FILENAME), 'w', encoding='utf-8') as fp:

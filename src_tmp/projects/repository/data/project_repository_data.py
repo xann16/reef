@@ -3,7 +3,8 @@ from typing import Any, Iterable
 
 from .project_item_data import ProjectItemData
 
-class ProjectRepositoryData():
+
+class ProjectRepositoryData:
     '''
     Contains data of projects managed by reef repository.
     '''
@@ -16,14 +17,14 @@ class ProjectRepositoryData():
         self._projects = {}
         self.add_projects(projects)
         self.add_projects(obj['projects'] if 'projects' in obj else [])
-        
+
         self.default_project = default_project if default_project is not None else (obj['default_project'] if 'default_project' in obj else None)
 
 
     def __contains__(self, project_name: str) -> bool:
         '''  Checks if project with given name is contained in the repository. '''
         return project_name in self._projects
-    
+
     def __iter__(self) -> Iterable[ProjectItemData]:
         ''' Lists all project items. '''
         return iter(self._projects.values)
@@ -53,7 +54,7 @@ class ProjectRepositoryData():
             raise KeyError(f"Project with name '{project_name}' does not exist.")
         del self._projects[project_name]
         if self.default_project == project_name:
-            self.default_project = None        
+            self.default_project = None
 
     def clear_projects(self) -> None:
         ''' Removes all projects from repository. '''
@@ -65,12 +66,12 @@ class ProjectRepositoryData():
             raise KeyError(f"Project with name '{project_name}' does not exist.")
         return self._projects[project_name]
 
-        
+
     @property
     def default_project(self) -> str | None:
         ''' Project used as default when working with this repository. '''
         return self._default_project
-    
+
     @default_project.setter
     def default_project(self, default_project: str | None) -> None:
         ''' Project used as default when working with this repository. '''
@@ -90,5 +91,5 @@ class ProjectRepositoryData():
 
         if self._default_project is not None:
             result['default_project'] = self.default_project
-    
+
         return result

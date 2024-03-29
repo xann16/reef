@@ -1,7 +1,8 @@
 
+from ...settings_base import SettingsBase
 from .project_temp_build_settings import ProjectTempBuildSettings
 from .project_temp_hierarchy_settings import ProjectTempHierarchySettings
-from ...settings_base import SettingsBase
+
 
 def __is_int(value):
     try:
@@ -27,7 +28,7 @@ class ProjectTempSettings(SettingsBase):
         self.version = version if version is not None else (obj['version'] if 'version' in obj else None)
         self.build = build if build is not None else (ProjectTempBuildSettings(obj['build']) if 'build' in obj else None)
         self.hierarchy = hierarchy if hierarchy is not None else (ProjectTempHierarchySettings(obj['hierarchy']) if 'hierarchy' in obj else None)
-        
+
     @property
     def version(self):
         ''' Constant project version if used. '''
@@ -51,7 +52,7 @@ class ProjectTempSettings(SettingsBase):
     @version.setter
     def version(self, version):
         ''' Constant project version if used. '''
-        # TODO: proper version string validation - type-dependent. 
+        # TODO: proper version string validation - type-dependent.
         if version is not None:
             if not isinstance(version, str):
                 raise ValueError("'version' property must be a string.")
@@ -64,7 +65,7 @@ class ProjectTempSettings(SettingsBase):
     def build(self):
         ''' Contains temporary build settings for a project. '''
         return self._build if self._build is not None else ProjectTempBuildSettings()
-    
+
     @build.setter
     def build(self, build):
         ''' Contains temporary build settings for a project. '''
@@ -78,7 +79,7 @@ class ProjectTempSettings(SettingsBase):
     def hierarchy(self):
         ''' Contains temporary directory structure settings for a project. '''
         return self._hierarchy if self._hierarchy is not None else ProjectTempHierarchySettings()
-    
+
     @hierarchy.setter
     def hierarchy(self, hierarchy):
         ''' Contains temporary build settings for a project. '''

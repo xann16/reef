@@ -1,8 +1,9 @@
+import json
 from os import path
 from typing import Iterable
-import json
 
-from .data.project_repository_data import ProjectRepositoryData, ProjectItemData
+from .data.project_repository_data import ProjectItemData, ProjectRepositoryData
+
 
 class ProjectRepository:
 
@@ -54,8 +55,8 @@ class ProjectRepository:
         ''' Lists all project items. '''
         return iter(self._data)
 
-    def add_project(self, project_name: str, project_source_path: str, *, 
-                    project_config_path: str| None = None) -> None:
+    def add_project(self, project_name: str, project_source_path: str, *,
+                    project_config_path: str | None = None) -> None:
         ''' Adds new project to repository with given name and source path (optionally, a non-standard config path). '''
         self.add_project_from_data(ProjectItemData({}, name=project_name, source_path=project_source_path, config_path=project_config_path))
 
@@ -76,7 +77,7 @@ class ProjectRepository:
         ''' Reloads repository data from the underlying JSON source file. '''
         if not path.exists(self.projects_source_path()):
             raise FileNotFoundError(f"Project repository source file '{self.projects_source_path()}' does not exist.")
-        with open(self.projects_source_path(), 'r', encoding='utf-8') as fp:
+        with open(self.projects_source_path(), encoding='utf-8') as fp:
             self._data = ProjectRepositoryData(json.load(fp))
 
     def save(self) -> None:

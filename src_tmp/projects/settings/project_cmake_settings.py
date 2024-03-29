@@ -1,5 +1,6 @@
 from ...settings_base import SettingsBase
 
+
 def __is_int(value):
     try:
         int(value)
@@ -20,7 +21,7 @@ class ProjectCMakeSettings(SettingsBase):
         Constructs ProjectCMakeSettings object from item dictionary or manual property value overrides.
         '''
         self.version_required = version_required if version_required is not None else (obj['version_required'] if 'version_required' in obj else None)
-        
+
     @property
     def version_required(self):
         ''' Override for minimum required version of CMake. '''
@@ -39,7 +40,7 @@ class ProjectCMakeSettings(SettingsBase):
     @version_required.setter
     def version_required(self, version_required):
         ''' Override for minimum required version of CMake. '''
-        # TODO: proper version string validation - type-dependent. 
+        # TODO: proper version string validation - type-dependent.
         if version_required is not None:
             if not isinstance(version_required, str):
                 raise ValueError("'version_required' property must be a string.")

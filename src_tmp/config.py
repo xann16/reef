@@ -1,12 +1,12 @@
-from os import path, environ
+from os import environ, path
 
-from src.utils import ensure_dir, load_json, dump_json
+from src.utils import dump_json, ensure_dir, load_json
 
 CONFIG_PATH_ENV_VAR_NAME = "REEF_CONFIG"
 CONFIG_FILE_NAME = "config.json"
 CONFIG_PROJECT_DIR = "projects"
 
-class Config(object):
+class Config:
 
     def __init__(self, config_path, exec_path, version) -> None:
         super().__init__()
@@ -116,7 +116,7 @@ class Config(object):
         # load shell rc file (withoud already present reef section, if any)
         is_reef = False
         new_lines = []
-        with open(rcpath, mode='r', encoding='utf-8') as fp:
+        with open(rcpath, encoding='utf-8') as fp:
             for line in fp:
                 if line.strip().startswith(INTRO):
                     is_reef = True

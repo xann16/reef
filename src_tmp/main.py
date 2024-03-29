@@ -1,9 +1,9 @@
-import click
 from os import path
 
-from .config import Config
-from .cli_project import project
+import click
 
+from .cli_project import project
+from .config import Config
 
 GROUP_COMMANDS = [
     'init',
