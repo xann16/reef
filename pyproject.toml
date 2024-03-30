@@ -36,6 +36,12 @@ Source = "https://github.com/xann16/reef"
 [tool.hatch.version]
 path = "src/reef/version.py"
 
+[tool.ruff]
+exclude = [
+  ".git",
+  "src_tmp"
+]
+
 [tool.hatch.envs.default]
 dependencies = [
   "coverage[toml]>=6.5",
