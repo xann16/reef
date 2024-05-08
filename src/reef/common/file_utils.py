@@ -1,4 +1,4 @@
-""" Provides some basic utility functions and wrappers for handling file system and file I/O. """
+"""Provides some basic utility functions and wrappers for handling file system and file I/O."""
 
 import json
 import os
