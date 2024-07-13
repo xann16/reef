@@ -1,6 +1,6 @@
 """Provides base class for objects representing settings data."""
 
-from typing import Any, Iterable
+from typing import Any, Iterable, Tuple
 
 _SETTINGS_STR_SPACES_PER_INDENT_LEVEL = 2
 _SETTINGS_STR_LIST_POINT_CHARACTER = "-"
@@ -159,7 +159,7 @@ class SettingsBase:
         if not self.__is_property(name):
             raise KeyError(f"No property '{name}' found in class '{type(self)}'")
 
-    def __expand_path(self, path: str) -> tuple[str, Any]:
+    def __expand_path(self, path: str) -> Tuple[str, Any]:
         """Helper function to recurse down the nested settings structure.
 
         Given path returns either (1) None and None - when given object is the target item in the path,
