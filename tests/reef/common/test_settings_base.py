@@ -1,4 +1,4 @@
-from typing import Any, Type
+from typing import Any, Optional, Type
 
 import pytest
 
@@ -31,7 +31,7 @@ class InvalidField(SettingsBase):
         self._x: int = 42
 
     @property
-    def p(self) -> int | None:
+    def p(self) -> Optional[int]:
         return self._x
 
     @p.setter
@@ -55,9 +55,9 @@ class Simple(SettingsBase):
 class Multi(SettingsBase):
     def __init__(self) -> None:
         self._any: Any = None
-        self._num: int | None = None
-        self._name: str | None = "Default"
-        self._obj: Type[SettingsBase] | None = None
+        self._num: Optional[int] = None
+        self._name: Optional[str] = "Default"
+        self._obj: Optional[Type[SettingsBase]] = None
 
     @property
     def any(self) -> Any:
@@ -76,7 +76,7 @@ class Multi(SettingsBase):
         self._num = value
 
     @property
-    def name(self) -> str | None:
+    def name(self) -> Optional[str]:
         return self._name
 
     @name.setter
@@ -84,7 +84,7 @@ class Multi(SettingsBase):
         self._name = value
 
     @property
-    def obj(self) -> Type[SettingsBase] | None:
+    def obj(self) -> Optional[Type[SettingsBase]]:
         return self._obj
 
     @obj.setter
